@@ -1,6 +1,7 @@
 " Author: takeshid
 
 function! colortips#enable() abort
+    call s:color_highlight()
 endfunction
 
 function! colortips#disable() abort
@@ -12,18 +13,31 @@ endfunction
 
 let s:prop_type_name = 'ColorTipsHighlight'
 let s:prop_type_id = 0
-let s:prop_typs = []
-
+let s:prop_types = []
+"
 function! s:color_highlight() abort
     call prop_clear(1, line('$'))
-    let l:matches = s:s:matchbufline('%', '#[0-9a-fA-F]\{6\}', 1, '$')
+    let l:matches = s:matchbufline('%', '#[0-9a-fA-F]\{6\}', 1, '$')
     if empty(l:matches)
         return
     endif
     for l:match in l:matches
         let l:type_name = s:prop_type_name . s:prop_type_id
         let l:colorcode = l:match.text
-        execute 'highlight ' . l:type_name . ' guifg=' . s:parse_colorcode(l:match.text)
+        let l:hlgroup = {'name': l:type_name,
+                    \'guifg': s:parse_colorcode(l:colorcode)
+                    \}
+        call hlset([l:hlgroup])
+        call prop_type_add(l:type_name, {'highlight':l:type_name})
+        let l:lnum = l:match.lnum
+        let l:col = l:match.byteidx+1
+        call prop_add(l:lnum, l:col, {'type':l:type_name, 'text': '▇▇'})
+    endfor
+endfunction
+
+function! s:parse_colorcode(colorcode) abort
+    return colorcode
+endfunction
 
 "####################### Utility functions ######################
 if exists('*matchbufline')
