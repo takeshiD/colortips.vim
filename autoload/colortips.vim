@@ -97,9 +97,7 @@ let s:prop_types = []
 
 function! s:color_highlight()
     let l:lines = s:get_buf_displayline()
-    " echo l:lines
     let l:lines = s:merge_lines(l:lines)
-    " echo l:lines
     let l:matches = []
     for l:line in l:lines
         let l:matches += s:matchbufline('%', colortips#pattern(), l:line.top, l:line.bottom)
