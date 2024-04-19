@@ -1,13 +1,13 @@
 " Hex
-#dd00dd                " Match
-#DD0dd                  " Unmatch
-#0f0                    " Match
-#0f00                   " Unmatch
+#dd00dd                    " Match
+#DD0dd                      " Unmatch
+#0f0                       " Match
+#0f00                       " Unmatch
 
 " rgb, rgba
-rgb(255,2,34)            " Match
-rgb(   255   ,  0,0)    " Match
-rgb(300, 0, 0)          " Match: evaluate 300 to 255 internal
-rgba(255, 0,0, 0.6)      " Match 
-rgba(255,0,0, .75)      " Match
-rgba(255,0,0, 1.25)     " Match: evaluate 1.25 to 1.0 internal
+rgb(255,2,34)              " Match
+rgb(   255   ,  100, 120)  " Match
+rgb(300, 0, 0)             " Match: evaluate 300 to 255 internal
+rgba(255, 230,0, 0.6)      " Match 
+rgba(25,200,100, .75)      " Match
+rgba(255,0,0, 1.25)        " Match: evaluate 1.25 to 1.0 internal

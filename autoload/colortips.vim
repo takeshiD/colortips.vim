@@ -1,5 +1,5 @@
 " Author: takeshid
-
+" #ff0000 #0f0
 function! colortips#enable() abort
     call s:color_highlight()
 endfunction
@@ -79,26 +79,30 @@ function! s:parse_colorcode(colorcode) abort
 endfunction
 
 function! s:get_buf_displayline()
-    " let l:bufnr = bufnr('%')
-    let l:winids = [win_getid()]
+    let l:bufnr = bufnr('%')
+    let l:winids = win_findbuf(l:bufnr)
     let l:lines = []
     for l:winid in l:winids
         let l:wininfo = get(getwininfo(l:winid), 0, v:none)
         let l:line = {
-                    \'winid':l:winid,
                     \'top':get(l:wininfo, 'topline', -1), 
                     \'bottom':get(l:wininfo, 'botline', -1)
                     \}
         call add(l:lines, l:line)
     endfor
+    call sort(l:lines, {x,y -> x.top > y.top})
     return l:lines
 endfunction
 
 let s:prop_type_name = 'ColorTips'
 let s:prop_type_id = 0
 let s:prop_types = []
+
 function! s:color_highlight()
     let l:lines = s:get_buf_displayline()
+    " echo l:lines
+    let l:lines = s:merge_lines(l:lines)
+    " echo l:lines
     let l:matches = []
     for l:line in l:lines
         let l:matches += s:matchbufline('%', colortips#pattern(), l:line.top, l:line.bottom)
@@ -163,18 +167,58 @@ function! s:between(target, lower, upper) abort
     endif
 endfunction
 
+function! s:merge(line1, line2) abort
+    return {
+            \'top':min([a:line1.top,a:line2.top]),
+            \'bottom':max([a:line1.bottom,a:line2.bottom]),
+            \}
+endfunction
+
+function! s:is_overlap(line1, line2) abort
+    if !(a:line1.top <= a:line1.bottom && a:line2.top <= a:line2.bottom)
+        throw "colortips.vim#exception is_overlap failed"
+    endif
+
+    if a:line1.top <= a:line2.top && a:line1.bottom < a:line2.top
+        return 0
+    else
+        return 1
+    endif
+endfunction
+
+function! s:push(stack, val) abort
+    call add(a:stack, a:val)
+endfunction
+
+function! s:pop(stack) abort
+    return remove(a:stack, -1)
+endfunction
+
+function! s:merge_lines(lines) abort
+    if len(a:lines) <= 1
+        return a:lines
+    endif
+    let l:result = [] " as using stack
+    let l:i = 0
+    for l:line in a:lines
+        call s:push(l:result, l:line)
+        if len(l:result) >= 2
+            let l:first = s:pop(l:result)
+            let l:second = s:pop(l:result)
+            if s:is_overlap(l:first, l:second)
+                let l:merged = s:merge(l:first, l:second)
+                call s:push(l:result, l:merged)
+            else
+                call s:push(l:result, l:second)
+                call s:push(l:result, l:first)
+            endif
+        endif
+    endfor
+    return l:result
+endfunction
+
 function! s:error_at(msg, excpetion, throwpoint)
     echohl ErrorMsg
     echomsg "[colortips.vim]" .. a:msg
     echohl None
-endfunction
-
-function! Test() abort
-    let l:lines = s:get_buf_displayline()
-    echo l:lines
-    let l:matches = []
-    for l:line in l:lines
-        let l:matches += s:matchbufline('%', colortips#pattern(), l:line.top, l:line.bottom)
-    endfor
-    echo l:matches
 endfunction
