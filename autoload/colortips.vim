@@ -78,31 +78,55 @@ function! s:parse_colorcode(colorcode) abort
     endif
 endfunction
 
-   
+function! s:get_buf_displayline()
+    " let l:bufnr = bufnr('%')
+    let l:winids = [win_getid()]
+    let l:lines = []
+    for l:winid in l:winids
+        let l:wininfo = get(getwininfo(l:winid), 0, v:none)
+        let l:line = {
+                    \'winid':l:winid,
+                    \'top':get(l:wininfo, 'topline', -1), 
+                    \'bottom':get(l:wininfo, 'botline', -1)
+                    \}
+        call add(l:lines, l:line)
+    endfor
+    return l:lines
+endfunction
+
 let s:prop_type_name = 'ColorTips'
 let s:prop_type_id = 0
 let s:prop_types = []
-function! s:color_highlight() abort
-    let l:matches = s:matchbufline('%', colortips#pattern(), 1, '$')
+function! s:color_highlight()
+    let l:lines = s:get_buf_displayline()
+    let l:matches = []
+    for l:line in l:lines
+        let l:matches += s:matchbufline('%', colortips#pattern(), l:line.top, l:line.bottom)
+        call prop_clear(l:line.top, l:line.bottom)
+    endfor
     if empty(l:matches)
         return
     endif
-    call prop_clear(1, line('$'))
-    for l:match in l:matches
-        let l:type_name = s:prop_type_name . s:prop_type_id
-        let l:colorcode = l:match.text
-        let l:hlgroup = {'name': l:type_name,
-                    \'guifg': s:parse_colorcode(l:colorcode)
-                    \}
-        call hlset([l:hlgroup])
-        call prop_type_delete(l:type_name)
-        call prop_type_add(l:type_name, {'highlight':l:type_name})
-        let l:lnum = l:match.lnum
-        let l:col = l:match.byteidx+1
-        call prop_add(l:lnum, l:col, {'type':l:type_name, 'text': '■'})
-        let s:prop_type_id += 1
-    endfor
-    let s:prop_type_id = 0
+    try
+        for l:match in l:matches
+            let l:type_name = s:prop_type_name . s:prop_type_id
+            let l:colorcode = l:match.text
+            let l:hlgroup = {'name': l:type_name,
+                        \'guifg': s:parse_colorcode(l:colorcode)
+                        \}
+            call hlset([l:hlgroup])
+            call prop_type_delete(l:type_name)
+            call prop_type_add(l:type_name, {'highlight':l:type_name})
+            let l:lnum = l:match.lnum
+            let l:col = l:match.byteidx+1
+            call prop_add(l:lnum, l:col, {'type':l:type_name, 'text': '■'})
+            let s:prop_type_id += 1
+        endfor
+    catch /E966/|E964/
+        call s:error_at('prop_add: invalid argument ' .. 'lnum=' .. l:lnum .. ',col=' .. l:col .. ',matchtext=' .. "\'" .. l:match.text .. "\'", v:exception, v:thowpoint)
+    finally
+        let s:prop_type_id = 0
+    endtry
 endfunction
 
 "####################### Utility functions ######################
@@ -113,15 +137,15 @@ else
         let l:dict = get(a:, 1, {'submatches': v:false})
         let l:result = []
         let l:lines = getbufline(a:buf, a:lnum, a:end)
-        for l:lnum in range(1, len(l:lines)+1)
-            let l:element = get(l:lines, l:lnum-1, '')
+        for l:lnum in range(len(l:lines))
+            let l:element = get(l:lines, l:lnum, '')
             let l:start = 0
             while l:start<len(l:element)
                 let l:match = matchstrpos(l:element, a:pat, l:start) 
                 if empty(l:match[0])
                     break
                 endif
-                call add(l:result, {'lnum':l:lnum, 'byteidx':l:match[1], 'text':l:match[0]})
+                call add(l:result, {'lnum':a:lnum+l:lnum, 'byteidx':l:match[1], 'text':l:match[0]})
                 let l:start = l:match[2]
             endwhile
         endfor
@@ -129,7 +153,7 @@ else
     endfunction
 endif
 
-function! s:between(target, lower, upper)
+function! s:between(target, lower, upper) abort
     if a:target < a:lower
         return a:lower
     elseif a:upper < a:target
@@ -139,3 +163,18 @@ function! s:between(target, lower, upper)
     endif
 endfunction
 
+function! s:error_at(msg, excpetion, throwpoint)
+    echohl ErrorMsg
+    echomsg "[colortips.vim]" .. a:msg
+    echohl None
+endfunction
+
+function! Test() abort
+    let l:lines = s:get_buf_displayline()
+    echo l:lines
+    let l:matches = []
+    for l:line in l:lines
+        let l:matches += s:matchbufline('%', colortips#pattern(), l:line.top, l:line.bottom)
+    endfor
+    echo l:matches
+endfunction

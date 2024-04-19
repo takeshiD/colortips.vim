@@ -23,6 +23,6 @@ let g:loaded_colortips = 1
 " Auto Commands
 augroup colortips-commands
     autocmd!
-    autocmd BufEnter,TextChanged,TextChangedI,Syntax * call colortips#enable()
+    autocmd TextChanged,TextChangedI,WinScrolled,Syntax * call colortips#enable()
 augroup END
 
