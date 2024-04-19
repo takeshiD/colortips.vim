@@ -1,5 +1,5 @@
 " Author: takeshid
-" #ff0000 #0f0
+
 function! colortips#enable() abort
     call s:color_highlight()
 endfunction
@@ -8,9 +8,6 @@ function! colortips#disable() abort
 endfunction
 
 function! colortips#toggle() abort
-endfunction
-
-function! colortips#update() abort
 endfunction
 
 let g:pattern_hex3 = '#[0-9a-fA-F]\{3\}\ze[^0-9a-fA-F]'
