@@ -1,5 +1,19 @@
 " Author: takeshid
+"
+"############### Customization ###############
+let g:colortips_enable = 1
 
+" Visibility
+let g:colortips_left_visible = 1
+let g:colortips_right_visible = 0
+let g:colortips_fill_visible = 0
+
+" chars
+let g:colortips_left_char = '■'
+let g:colortips_right_char = '■'
+
+"################ Interfaces #################
+"
 function! colortips#autocommand() abort
     if g:colortips_enable
         call colortips#update()
@@ -24,43 +38,50 @@ function! colortips#toggle() abort
     endif
 endfunction
 
-"############### Customization ###############
-let g:colortips_enable = 1
-let g:colortips_left_visible = 1
-let g:colortips_right_visible = 0
-let g:colortips_fill_visible = 0
-"#############################################
-
 function! colortips#update()
     let l:lines = s:get_buf_displayline()
     let l:lines = s:merge_lines(l:lines)
     let l:matches = []
     for l:line in l:lines
-        let l:matches += s:matchbufline('%', colortips#pattern(), l:line.top, l:line.bottom)
+        let l:matches += s:matchbufline('%', s:pattern, l:line.top, l:line.bottom)
         call prop_clear(l:line.top, l:line.bottom)
     endfor
     if empty(l:matches)
         return
     endif
     try
+        let l:prop_type_id = 0
         for l:match in l:matches
-            let l:type_name = s:prop_type_name . s:prop_type_id
-            let l:colorcode = l:match.text
-            let l:hlgroup = {'name': l:type_name,
-                        \'guifg': s:parse_colorcode(l:colorcode)
-                        \}
-            call hlset([l:hlgroup])
-            call prop_type_delete(l:type_name)
-            call prop_type_add(l:type_name, {'highlight':l:type_name})
+            let l:type_name_tips = 'Colortips' .. l:prop_type_id
+            let l:type_name_fill = 'ColortipsFill' .. l:prop_type_id
+            let l:colorcode = s:parse_colorcode(l:match.text)
+            let l:hlgroup_tips = {'name': l:type_name_tips,
+                               \'guifg': l:colorcode
+                               \}
+            let l:hlgroup_fill = {'name': l:type_name_fill,
+                               \'guibg': l:colorcode
+                               \}
+            call hlset([l:hlgroup_tips, l:hlgroup_fill])
+            call prop_type_delete(l:type_name_tips)
+            call prop_type_delete(l:type_name_fill)
+            call prop_type_add(l:type_name_tips, {'highlight':l:type_name_tips})
+            call prop_type_add(l:type_name_fill, {'highlight':l:type_name_fill})
             let l:lnum = l:match.lnum
             let l:col = l:match.byteidx+1
-            call prop_add(l:lnum, l:col, {'type':l:type_name, 'text': '■'})
-            let s:prop_type_id += 1
+            let l:length = len(l:match.text)
+            if g:colortips_left_visible
+                call prop_add(l:lnum, l:col, {'type':l:type_name_tips, 'text': g:colortips_left_char})
+            endif
+            if g:colortips_right_visible
+                call prop_add(l:lnum, l:col+l:length, {'type':l:type_name_tips, 'text': g:colortips_right_char})
+            endif
+            if g:colortips_fill_visible
+                call prop_add(l:lnum, l:col, {'type':l:type_name_fill, 'length': l:length})
+            endif
+            let l:prop_type_id += 1
         endfor
     catch /E966/|E964/
         call s:error_at('prop_add: invalid argument ' .. 'lnum=' .. l:lnum .. ',col=' .. l:col .. ',matchtext=' .. "\'" .. l:match.text .. "\'", v:exception, v:thowpoint)
-    finally
-        let s:prop_type_id = 0
     endtry
 endfunction
 
@@ -68,20 +89,20 @@ function! colortips#clear() abort
     call prop_clear(1, line('$'))
 endfunction
 
-let g:pattern_hex3 = '#[0-9a-fA-F]\{3\}\ze[^0-9a-fA-F]'
-let g:pattern_hex6 = '#[0-9a-fA-F]\{6\}'
-let g:pattern_rgb  = 'rgb(\s*\d\{1,3\}\s*,\s*\d\{1,3\}\s*,\s*\d\{1,3\}\s*)'
-let g:pattern_rgba = 'rgba(\s*\d\{1,3\}\s*,\s*\d\{1,3\}\s*,\s*\d\{1,3\}\s*,\s*\(\d\+\.\?\d*\|\d*\.\?\d\+\)\s*)'
 
-function! colortips#pattern() abort
-    let l:pattern_list = [
-                \ g:pattern_hex3,
-                \ g:pattern_hex6,
-                \ g:pattern_rgb,
-                \ g:pattern_rgba,
-                \]
-   return '\%(' .. join(l:pattern_list, '\|') .. '\)'
-endfunction
+"############# script locals #########################
+let s:pattern_hex6 = '#\x\{6\}\ze\%(\_W\|$\)'
+let s:pattern_hex3 = '#\x\{3\}\ze\%(\_W\|$\)'
+let s:pattern_rgb  = 'rgb(\s*\d\{1,3\}\s*,\s*\d\{1,3\}\s*,\s*\d\{1,3\}\s*)'
+let s:pattern_rgba = 'rgba(\s*\d\{1,3\}\s*,\s*\d\{1,3\}\s*,\s*\d\{1,3\}\s*,\s*\(\d\+\.\?\d*\|\d*\.\?\d\+\)\s*)'
+let s:pattern_list = [
+            \s:pattern_hex6,
+            \s:pattern_hex3,
+            \s:pattern_rgb,
+            \s:pattern_rgba,
+            \]
+let s:pattern = '\%(' .. join(s:pattern_list, '\|') .. '\)'
+
 
 function! s:compose_color(fg, bg, alpha) abort
     let l:fg_norm = mapnew(a:fg, {_,x -> x/256.0})
@@ -107,7 +128,7 @@ def! s:parse_colorcode(colorcode: string): string
         if len(colorcode[1 :]) == 6
             return colorcode
         elseif len(colorcode[1 :]) == 3
-            return printf("#0%s0%s0%s", colorcode[1], colorcode[2], colorcode[3])
+            return printf("#%s%s%s", colorcode[1] .. colorcode[1], colorcode[2] .. colorcode[2], colorcode[3] .. colorcode[3])
         endif
     endif
     # RGB pattern: expect rgb(255,0,0)
@@ -150,44 +171,6 @@ function! s:get_buf_displayline()
     return l:lines
 endfunction
 
-let s:prop_type_name = 'ColorTips'
-let s:prop_type_id = 0
-let s:prop_types = []
-
-function! s:color_highlight()
-    let l:lines = s:get_buf_displayline()
-    let l:lines = s:merge_lines(l:lines)
-    let l:matches = []
-    for l:line in l:lines
-        let l:matches += s:matchbufline('%', colortips#pattern(), l:line.top, l:line.bottom)
-        call prop_clear(l:line.top, l:line.bottom)
-    endfor
-    if empty(l:matches)
-        return
-    endif
-    try
-        for l:match in l:matches
-            let l:type_name = s:prop_type_name . s:prop_type_id
-            let l:colorcode = l:match.text
-            let l:hlgroup = {'name': l:type_name,
-                        \'guifg': s:parse_colorcode(l:colorcode)
-                        \}
-            call hlset([l:hlgroup])
-            call prop_type_delete(l:type_name)
-            call prop_type_add(l:type_name, {'highlight':l:type_name})
-            let l:lnum = l:match.lnum
-            let l:col = l:match.byteidx+1
-            call prop_add(l:lnum, l:col, {'type':l:type_name, 'text': '■'})
-            let s:prop_type_id += 1
-        endfor
-    catch /E966/|E964/
-        call s:error_at('prop_add: invalid argument ' .. 'lnum=' .. l:lnum .. ',col=' .. l:col .. ',matchtext=' .. "\'" .. l:match.text .. "\'", v:exception, v:thowpoint)
-    finally
-        let s:prop_type_id = 0
-    endtry
-endfunction
-
-"####################### Utility functions ######################
 if exists('*matchbufline')
     let s:matchbufline = function('matchbufline')
 else

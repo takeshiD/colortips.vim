@@ -40,26 +40,30 @@ soso
 
 ## Customization
 ### Tip Position Visible
-#### only left tips(Default)
+#### left(Default)
 ```vim
 let g:colortips_left_visible = 1
 let g:colortips_right_visible = 0
 let g:colortips_fill_visible = 0
 ```
+![colortips left](images/colortips_left.png)
 
-#### add right tips
+#### right
 ```vim
-let g:colortips_left_visible = 1
+let g:colortips_left_visible = 0
 let g:colortips_right_visible = 1
 let g:colortips_fill_visible = 0
 ```
+![colortips right](images/colortips_right.png)
 
-#### add also fill
+#### fill
 ```vim
-let g:colortips_left_visible = 1
-let g:colortips_right_visible = 1
+let g:colortips_left_visible = 0
+let g:colortips_right_visible = 0
 let g:colortips_fill_visible = 1
 ```
+![colortips fill](images/colortips_fill.png)
+
 
 ### Tips Character
 ### Default
@@ -67,3 +71,10 @@ let g:colortips_fill_visible = 1
 let g:colortips_left_char = '■'
 let g:colortips_right_char = '■'
 ```
+
+### Example
+```vim
+let g:colortips_left_char = '▨'
+let g:colortips_right_char = '●'
+```
+![colortips char](images/colortips_char.png)
