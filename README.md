@@ -16,24 +16,27 @@ dein#add('takeshid/colortips.vim')
 
 ## Features
 Display colorcode tips such as following representaions.
-* `#1a2b3c`
-* `#123`
-* `rgb(r,b,g)`
-* `rgba(r,g,b,a)`
+* Hex Triplet: `#dd00dd`, `#DD00dd`, `#000`
+* RGB(A): `rgb(r,b,g)`, `rgba(r,g,b,a)`
 
 ![colortips demo](images/colortips_demo.png)
 
 ## Enable
+`colortips.vim` is enable on vim-startup.
 ```vim
-let g:colortips_enable = 1 " default
+let g:colortips_enable = 1 " default 1, if assigned 0, colortips.vim is disable on vim-startup
 ```
 
 ## Commands
+Swtiching enable/disable.
 ```vim
 :ColorTipsEnable
 :ColorTipsDisable
 :ColorTipsToggle
 ```
+
+## Perfomance
+soso
 
 ## Customization
 ### Tip Position Visible
