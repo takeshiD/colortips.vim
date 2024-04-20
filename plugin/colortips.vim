@@ -20,9 +20,13 @@ if exists('g:loaded_colortips')
 endif
 let g:loaded_colortips = 1
 
+command! -bar ColortipsEnable  call colortips#enable()
+command! -bar ColortipsDisable call colortips#disable()
+command! -bar ColortipsToggle  call colortips#toggle()
+
 " Auto Commands
 augroup colortips-commands
     autocmd!
-    autocmd TextChanged,TextChangedI,WinScrolled,Syntax * call colortips#enable()
+    autocmd TextChanged,TextChangedI,WinScrolled,Syntax * call colortips#autocommand()
 augroup END
 

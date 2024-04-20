@@ -3,7 +3,7 @@ color tips for vim
 
 ## Requirements
 This plugin require following two features.
-* `textprop` feature(Vim 8.1.0579 or newer)
+* Vim9 or newer(need vim9script)
 * Terminal-Emulator, Shell, Terminal-Multiplexer support **true-color**
 
 ## Installation
@@ -21,24 +21,44 @@ Display colorcode tips such as following representaions.
 * `rgb(r,b,g)`
 * `rgba(r,g,b,a)`
 
+## Enable
+```vim
+let g:colortips_enable = 1 " default
+```
+
+## Commands
+```vim
+:ColorTipsEnable
+:ColorTipsDisable
+:ColorTipsToggle
+```
+
 ## Customization
-### Tip Position
+### Tip Position Visible
+#### only left tips(Default)
 ```vim
-let g:colortips_pos = 'left'
+let g:colortips_left_visible = 1
+let g:colortips_right_visible = 0
+let g:colortips_fill_visible = 0
 ```
-> TODO : add image
-```vim
-let g:colortips_pos = 'right'
-```
-> TODO : add image
 
-### Select representation
+#### add right tips
 ```vim
-let g:colortips_tips = 1 " Default 1 (1:on, 0:off)
+let g:colortips_left_visible = 1
+let g:colortips_right_visible = 1
+let g:colortips_fill_visible = 0
 ```
-> TODO : add image
 
+#### add also fill
 ```vim
-let g:colortips_fill = 1 " Default 0 (1:on, 0:off)
+let g:colortips_left_visible = 1
+let g:colortips_right_visible = 1
+let g:colortips_fill_visible = 1
 ```
-> TODO : add image
+
+### Tips Character
+### Default
+```vim
+let g:colortips_left_char = '■'
+let g:colortips_right_char = '■'
+```
