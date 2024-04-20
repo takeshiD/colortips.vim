@@ -21,6 +21,8 @@ Display colorcode tips such as following representaions.
 * `rgb(r,b,g)`
 * `rgba(r,g,b,a)`
 
+![colortips demo](images/colortips_demo.png)
+
 ## Enable
 ```vim
 let g:colortips_enable = 1 " default
