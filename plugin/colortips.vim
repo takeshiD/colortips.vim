@@ -27,6 +27,6 @@ command! -bar ColortipsToggle  call colortips#toggle()
 " Auto Commands
 augroup colortips-commands
     autocmd!
-    autocmd TextChanged,TextChangedI,WinScrolled,Syntax * call colortips#autocommand()
+    " autocmd TextChanged,TextChangedI,WinScrolled,Syntax * call colortips#autocommand()
 augroup END
 

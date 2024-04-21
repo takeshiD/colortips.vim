@@ -1,37 +1,34 @@
 " Author: takeshid
 "
 "############### Customization ###############
-let g:colortips_enable = 1
-
+let s:colortips_enable = get(g:, 'colortips_enable',  1)'
 " Visibility
-let g:colortips_left_visible = 1
-let g:colortips_right_visible = 0
-let g:colortips_fill_visible = 0
-
+let s:colortips_left_visible    = get(g:, 'colortips_left_visible',  1)'
+let s:colortips_right_visible   = get(g:, 'colortips_right_visible', 0)'
+let s:colortips_fill_visible    = get(g:, 'colortips_fill_visible',  0)'
 " chars
-let g:colortips_left_char = '■'
-let g:colortips_right_char = '■'
-
+let s:colortips_left_char   = get(g:, 'colortips_left_char', '■')
+let s:colortips_right_char  = get(g:, 'colortips_left_char', '■')
 "################ Interfaces #################
 "
 function! colortips#autocommand() abort
-    if g:colortips_enable
+    if s:colortips_enable
         call colortips#update()
     endif
 endfunction
 
 function! colortips#enable() abort
     call colortips#update()
-    let g:colortips_enable = 1
+    let s:colortips_enable = 1
 endfunction
 
 function! colortips#disable() abort
     call colortips#clear()
-    let g:colortips_enable = 0
+    let s:colortips_enable = 0
 endfunction
 
 function! colortips#toggle() abort
-    if g:colortips_enable
+    if s:colortips_enable
         call colortips#disable()
     else
         call colortips#enable()
@@ -69,13 +66,13 @@ function! colortips#update()
             let l:lnum = l:match.lnum
             let l:col = l:match.byteidx+1
             let l:length = len(l:match.text)
-            if g:colortips_left_visible
-                call prop_add(l:lnum, l:col, {'type':l:type_name_tips, 'text': g:colortips_left_char})
+            if s:colortips_left_visible
+                call prop_add(l:lnum, l:col, {'type':l:type_name_tips, 'text': s:colortips_left_char})
             endif
-            if g:colortips_right_visible
-                call prop_add(l:lnum, l:col+l:length, {'type':l:type_name_tips, 'text': g:colortips_right_char})
+            if s:colortips_right_visible
+                call prop_add(l:lnum, l:col+l:length, {'type':l:type_name_tips, 'text': s:colortips_right_char})
             endif
-            if g:colortips_fill_visible
+            if s:colortips_fill_visible
                 call prop_add(l:lnum, l:col, {'type':l:type_name_fill, 'length': l:length})
             endif
             let l:prop_type_id += 1
