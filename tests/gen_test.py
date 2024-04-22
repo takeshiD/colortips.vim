@@ -5,10 +5,9 @@ def generate_largesize():
         for i in range(1000):
             f.write(cc)
 
-
 def generate_12bitcolor(fname):
     txt = ""
-    for cc in range(2<<11-1):
+    for cc in range(2<<12-1):
         txt += f"#{cc:03x}"
         if cc % 16 == 15:
             txt += "\n"

@@ -1,34 +1,23 @@
 " Author: takeshid
-"
-"############### Customization ###############
-let s:colortips_enable = get(g:, 'colortips_enable',  1)'
-" Visibility
-let s:colortips_left_visible    = get(g:, 'colortips_left_visible',  1)'
-let s:colortips_right_visible   = get(g:, 'colortips_right_visible', 0)'
-let s:colortips_fill_visible    = get(g:, 'colortips_fill_visible',  0)'
-" chars
-let s:colortips_left_char   = get(g:, 'colortips_left_char', '■')
-let s:colortips_right_char  = get(g:, 'colortips_left_char', '■')
-"################ Interfaces #################
-"
+
 function! colortips#autocommand() abort
-    if s:colortips_enable
+    if g:colortips_enable
         call colortips#update()
     endif
 endfunction
 
 function! colortips#enable() abort
     call colortips#update()
-    let s:colortips_enable = 1
+    let g:colortips_enable = 1
 endfunction
 
 function! colortips#disable() abort
     call colortips#clear()
-    let s:colortips_enable = 0
+    let g:colortips_enable = 0
 endfunction
 
 function! colortips#toggle() abort
-    if s:colortips_enable
+    if g:colortips_enable
         call colortips#disable()
     else
         call colortips#enable()
@@ -66,13 +55,13 @@ function! colortips#update()
             let l:lnum = l:match.lnum
             let l:col = l:match.byteidx+1
             let l:length = len(l:match.text)
-            if s:colortips_left_visible
-                call prop_add(l:lnum, l:col, {'type':l:type_name_tips, 'text': s:colortips_left_char})
+            if g:colortips_left_visible
+                call prop_add(l:lnum, l:col, {'type':l:type_name_tips, 'text': g:colortips_left_char})
             endif
-            if s:colortips_right_visible
-                call prop_add(l:lnum, l:col+l:length, {'type':l:type_name_tips, 'text': s:colortips_right_char})
+            if g:colortips_right_visible
+                call prop_add(l:lnum, l:col+l:length, {'type':l:type_name_tips, 'text': g:colortips_right_char})
             endif
-            if s:colortips_fill_visible
+            if g:colortips_fill_visible
                 call prop_add(l:lnum, l:col, {'type':l:type_name_fill, 'length': l:length})
             endif
             let l:prop_type_id += 1
@@ -152,8 +141,8 @@ def! s:parse_colorcode(colorcode: string): string
     return "#ffffff"
 enddef
 
-function! s:get_buf_displayline()
-    let l:bufnr = bufnr('%')
+function! s:get_buf_displayline(buf)
+    let l:bufnr = bufnr(buf)
     let l:winids = win_findbuf(l:bufnr)
     let l:lines = []
     for l:winid in l:winids
