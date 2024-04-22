@@ -24,8 +24,9 @@ function! colortips#toggle() abort
     endif
 endfunction
 
+let w:
 function! colortips#update()
-    let l:lines = s:get_buf_displayline()
+    let l:lines = s:get_buf_displayline('%')
     let l:lines = s:merge_lines(l:lines)
     let l:matches = []
     for l:line in l:lines
@@ -142,7 +143,7 @@ def! s:parse_colorcode(colorcode: string): string
 enddef
 
 function! s:get_buf_displayline(buf)
-    let l:bufnr = bufnr(buf)
+    let l:bufnr = bufnr(a:buf)
     let l:winids = win_findbuf(l:bufnr)
     let l:lines = []
     for l:winid in l:winids
