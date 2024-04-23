@@ -24,7 +24,6 @@ function! colortips#toggle() abort
     endif
 endfunction
 
-let w:
 function! colortips#update()
     let l:lines = s:get_buf_displayline('%')
     let l:lines = s:merge_lines(l:lines)
@@ -149,6 +148,7 @@ function! s:get_buf_displayline(buf)
     for l:winid in l:winids
         let l:wininfo = get(getwininfo(l:winid), 0, v:none)
         let l:line = {
+                    \'winid': l:winid,
                     \'top':get(l:wininfo, 'topline', -1), 
                     \'bottom':get(l:wininfo, 'botline', -1)
                     \}
