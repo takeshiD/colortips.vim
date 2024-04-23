@@ -1,7 +1,7 @@
 # colortips.vim
 color tips for vim
 
-![colortips demo](images/colortips_demo.png)
+![colortips demo](images/colortips.png)
 
 ## Requirements
 This plugin require following two features.
