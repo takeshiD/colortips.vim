@@ -74,6 +74,9 @@ let g:colortips_right_char = '■'
 
 ### Example
 ```vim
+let g:colortips_left_visible = 1
+let g:colortips_right_visible = 1
+let g:colortips_fill_visible = 0
 let g:colortips_left_char = '▨'
 let g:colortips_right_char = '●'
 ```
