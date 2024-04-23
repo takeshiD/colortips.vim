@@ -24,6 +24,8 @@ function! colortips#toggle() abort
     endif
 endfunction
 
+let s:prop_type_id = 0
+let s:max_size = 2048 "66*30 = 1980
 function! colortips#update()
     let l:lines = s:get_buf_displayline('%')
     let l:lines = s:merge_lines(l:lines)
@@ -36,10 +38,9 @@ function! colortips#update()
         return
     endif
     try
-        let l:prop_type_id = 0
         for l:match in l:matches
-            let l:type_name_tips = 'Colortips' .. l:prop_type_id
-            let l:type_name_fill = 'ColortipsFill' .. l:prop_type_id
+            let l:type_name_tips = 'Colortips' .. s:prop_type_id
+            let l:type_name_fill = 'ColortipsFill' .. s:prop_type_id
             let l:colorcode = s:parse_colorcode(l:match.text)
             let l:hlgroup_tips = {'name': l:type_name_tips,
                                \'guifg': l:colorcode
@@ -64,7 +65,7 @@ function! colortips#update()
             if g:colortips_fill_visible
                 call prop_add(l:lnum, l:col, {'type':l:type_name_fill, 'length': l:length})
             endif
-            let l:prop_type_id += 1
+            let s:prop_type_id = (s:prop_type_id + 1) % s:max_size
         endfor
     catch /E966/|E964/
         call s:error_at('prop_add: invalid argument ' .. 'lnum=' .. l:lnum .. ',col=' .. l:col .. ',matchtext=' .. "\'" .. l:match.text .. "\'", v:exception, v:thowpoint)
