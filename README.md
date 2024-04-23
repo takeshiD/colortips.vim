@@ -1,6 +1,8 @@
 # colortips.vim
 color tips for vim
 
+![colortips demo](images/colortips_demo.png)
+
 ## Requirements
 This plugin require following two features.
 * Vim9 or newer(need vim9script)
@@ -13,13 +15,11 @@ Add folowing text to your `.vimrc`.
 ```vim
 dein#add('takeshid/colortips.vim')
 ```
-
 ## Features
 Display colorcode tips such as following representaions.
 * Hex Triplet: `#dd00dd`, `#DD00dd`, `#000`
 * RGB(A): `rgb(r,b,g)`, `rgba(r,g,b,a)`
 
-![colortips demo](images/colortips_demo.png)
 
 ## Enable
 `colortips.vim` is enable on vim-startup.
