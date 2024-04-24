@@ -1,0 +1,70 @@
+*colortips.txt*		 A plugin for displaying colortips in Vim  
+
+Author: takeshid (https://github.com/takeshiD)
+License: MIT License
+Repository: https://github.com/takeshiD/colortips.vim
+Last Change: 2024/04/23 22:26:20
+
+
+CONTENTS					*colortips-contents*
+
+Introduction				|colortips-introduction|
+Commands				|colortips-commands|
+Option					|colortips-option|
+Examples				|colortips-examples|
+Troubleshooting				|colortips-troubleshooting|
+
+
+==============================================================================
+INTRODUCTION					*colortips-introduction*
+
+*colortips* is a plugin for visually colorcode as little tip or fill (or
+combination both) in Vim.
+
+==============================================================================
+COMMANDS					*colortips-commands*
+
+------------------------------------------------------------------------------
+:ColorTipsToggle				*:ColortipsToggle*
+    Toggle colortips `on` and `off`
+
+:ColorTipsEnable				*:ColortipsEnable*
+    Enbale colortips on current buffer.
+    
+:ColorTipsDisable				*:ColortipsDisable*
+    Disable colortips, will clear colotirps every buffer.
+
+
+==============================================================================
+OPTION						*colortips-option*
+
+------------------------------------------------------------------------------
+						*colortips_left_visible*
+This option determines the visibility of the left character in colortps.
+When `g:color_tips_left_visible` is 1, left-char is displayed, when it is 0, left-char is hidden.
+Default: 1, Value: Bool
+>
+    let g:colortips_left_visible = 1
+<
+						*colortips_right_visible*
+This option determines the visibility of the right character in colortips.
+When `g:color_tips_right_visible` is 1, right-char is displayed, when it is 0, right-char is hidden.
+Default: 0, Value: Bool
+>
+    let g:colortips_right_visible = 0
+<
+						*colortips_fill_visible*
+This option determines the visibility of fill matched text in colortips.
+When `g:color_tips_right_visible` is 1, matched text is filled, when it is 0, matched text is not filled
+Default: 0, Value: Bool
+>
+    let g:colortips_fill_visible = 0
+<
+==============================================================================
+EXAMPLES					*colortips-examples*
+
+==============================================================================
+TROUBLESHOOTING					*colortips-troubleshooting*
+
+
+vim:tw=78:sw=4:ts=8:ft=help:norl:noet:
