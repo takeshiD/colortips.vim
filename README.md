@@ -65,8 +65,8 @@ let g:colortips_fill_visible = 1
 ![colortips fill](images/colortips_fill.png)
 
 
-### Tips Character
-### Default
+### Tip Character
+#### Default
 ```vim
 let g:colortips_left_char = '■'
 let g:colortips_right_char = '■'

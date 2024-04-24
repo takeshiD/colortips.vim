@@ -60,8 +60,41 @@ Default: 0, Value: Bool
 >
     let g:colortips_fill_visible = 0
 <
+
+------------------------------------------------------------------------------
+						*colortips_left_char*
+						*colortips_right_char*
+This option sets the colortips character. 
+You can set character to `colortips_left_char` and `g:colortips_right_char`.
+By default, set rectangle character.
+>
+    let g:colortips_left_char = '■'
+    let g:colortips_right_char = '■'
+<
 ==============================================================================
 EXAMPLES					*colortips-examples*
+1. Default
+This example is default. Thus, you don't need to append configure for `colortips.vim` to your `.vimrc`. You can use `colortips.vim` out of the box.
+>
+    let g:colortips_enable = 1
+    let g:colortips_left_visible = 1
+    let g:colortips_left_char = '■'
+<
+
+2. Left and right tips
+>
+    let g:colortips_left_visible = 1
+    let g:colortips_right_visible = 1
+    let g:colortips_left_char = '▨'
+    let g:colortips_right_char = '●'
+<
+
+3. Fill text and left tips
+>
+    let g:colortips_left_visible = 1
+    let g:colortips_fill_visible = 1
+    let g:colortips_left_char = ' '
+<
 
 ==============================================================================
 TROUBLESHOOTING					*colortips-troubleshooting*
